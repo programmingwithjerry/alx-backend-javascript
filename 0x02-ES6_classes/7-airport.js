@@ -11,8 +11,28 @@ export default class Airport {
     this._code = code; // Store the airport code
   }
 
-  // Default string description of the class
-  toString() {
+  // Getter for name
+  get name() {
+    return this._name;
+  }
+
+  // Setter for name
+  set name(value) {
+    this._name = value;
+  }
+
+  // Getter for code
+  get code() {
+    return this._code;
+  }
+
+  // Setter for code
+  set code(value) {
+    this._code = value;
+  }
+
+  // Custom toStringTag property
+  get [Symbol.toStringTag]() {
     return this._code; // Return the airport code
   }
 }
