@@ -7,7 +7,7 @@ export default class Car {
 
   // Method to create a new instance of the Car class
   cloneCar() {
-    const Clone = this.constructor[Symbol.species] || this.constructor; // Check for a custom species or use the current constructor
+    const Clone = this.constructor[Symbol.species] || this.constructor;
     return new Clone(this._brand, this._motor, this._color);
   }
 
@@ -26,5 +26,3 @@ export default class Car {
     return this._color;
   }
 }
-
-// To enable custom cloning logic, you can define the Symbol.species property in subclasses if needed
