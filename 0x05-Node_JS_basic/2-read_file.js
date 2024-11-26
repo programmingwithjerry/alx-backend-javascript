@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * This script defines a function `countStudents` that reads a CSV file,
  * counts the number of students in different fields, and logs the results to the console.
