@@ -1,68 +1,91 @@
-// Import the 'request' module for making HTTP requests to test the server
+// Import the 'request' module to make HTTP requests and 'chai' for assertions
 const request = require('request');
-
-// Import the 'expect' function from the 'chai' assertion library for assertions
 const { expect } = require('chai');
 
-// Define the test suite for testing the index page and cart routes of the server
+// Test suite for the Index page
 describe('Index page', function () {
-
-  // Test to verify that the server returns the correct status code for the index page
+  
+  // Test case to check the status code of the response from the root URL '/'
   it('should have the correct status code', function (done) {
-    // Send a GET request to the root URL of the server
     request('http://localhost:7865', function (error, response) {
-      // Assert that the HTTP response status code is 200 (OK)
+      // Assert that the status code is 200 (OK)
       expect(response.statusCode).to.equal(200);
-      // Call 'done' to indicate the asynchronous test has completed
       done();
     });
   });
 
-  // Test to verify that the server returns the correct response body for the index page
+  // Test case to check the content of the response from the root URL '/'
   it('should have the correct result', function (done) {
-    // Send a GET request to the root URL of the server
     request('http://localhost:7865', function (error, response, body) {
-      // Assert that the response body matches the expected string
+      // Assert that the body of the response matches the expected string
       expect(body).to.equal('Welcome to the payment system');
-      // Call 'done' to indicate the asynchronous test has completed
       done();
     });
   });
 
-  // Test to verify that the server does not return an unexpected response body
-  it('should not return an unexpected result', function (done) {
-    // Send a GET request to the root URL of the server
+  // Test case to check that the body of the response is not equal to 'Something else'
+  it('other?', function (done) {
     request('http://localhost:7865', function (error, response, body) {
-      // Assert that the response body is not equal to an incorrect value
+      // Assert that the body is not equal to 'Something else'
       expect(body).to.not.equal('Something else');
-      // Call 'done' to indicate the asynchronous test has completed
       done();
     });
   });
 
-  // Test to verify that the server returns the correct status code and response body 
-  // when the cart ID is a valid number
-  it('should have the correct status code when :id is a number', function (done) {
-    // Send a GET request to the URL with a valid cart ID (numeric value)
+  // Test case to check the response for the cart ID (numeric)
+  it('should have the correct status code when :id is a number?', function (done) {
     request('http://localhost:7865/cart/12', function (error, response, body) {
-      // Assert that the response status code is 200 (OK)
+      // Assert that the status code is 200 and the response body matches the expected string
       expect(response.statusCode).to.equal(200);
-      // Assert that the response body contains the expected message with the cart ID
       expect(body).to.equal('Payment methods for cart 12');
-      // Call 'done' to indicate the asynchronous test has completed
       done();
     });
   });
 
-  // Test to verify that the server returns the correct status code (404) 
-  // when the cart ID is not a valid number
-  it('should have the correct status code when :id is NOT a number (=> 404)', function (done) {
-    // Send a GET request to the URL with an invalid cart ID (non-numeric value)
+  // Test case to check the response for the cart ID (non-numeric)
+  it('should have the correct status code when :id is NOT a number (=> 404)?', function (done) {
     request('http://localhost:7865/cart/hello', function (error, response) {
-      // Assert that the response status code is 404 (Not Found) due to invalid ID format
+      // Assert that the status code is 404 for invalid cart ID
       expect(response.statusCode).to.equal(404);
-      // Call 'done' to indicate the asynchronous test has completed
       done();
+    });
+  });
+
+  // Test suite for the '/login' route
+  describe('/login', function () {
+    it('should have the user login', function (done) {
+      // Define the options for a POST request to the '/login' endpoint with JSON body
+      const options = {
+        method: 'POST',
+        url: 'http://localhost:7865/login',
+        json: { userName: 'Betty' }
+      };
+
+      // Make the request and check if the response body matches the expected message
+      request(options, function (error, response, body) {
+        expect(body).to.equal('Welcome Betty');
+        done();
+      });
+    });
+  });
+
+  // Test suite for the '/available_payments' route
+  describe('/available_payments', function () {
+    it('should have the available payment methods', function (done) {
+      // Define the expected response for the available payment methods
+      const expectedResponse = {
+        payment_methods: {
+          credit_cards: true, // Credit cards are available
+          paypal: false       // PayPal is not available
+        }
+      };
+
+      // Make a request to the '/available_payments' endpoint and assert the response
+      request('http://localhost:7865/available_payments', function (error, response, body) {
+        // Assert that the response body matches the expected JSON response
+        expect(JSON.parse(body)).to.deep.equal(expectedResponse);
+        done();
+      });
     });
   });
 });
